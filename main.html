@@ -37,19 +37,60 @@
         }
         
         .background-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4000px; /* 背景图片高度 */
-            /* 背景图片 - 可替换 START */
-            background-image: url('https://s41.ax1x.com/2026/01/14/pZDjIPO.jpg');
-            background-size: cover;
-            background-position: center top;
-            background-repeat: no-repeat;
-            /* 背景图片 - 可替换 END */
-            animation: backgroundScroll 60s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4000px; /* 背景图片高度 */
+    /* 背景图片 - 可替换 START */
+    background-image: url('https://s41.ax1x.com/2026/01/14/pZDjIPO.jpg');
+    background-size: cover;
+    background-position: center center; /* 修改为居中显示 */
+    background-repeat: no-repeat;
+    /* 背景图片 - 可替换 END */
+    animation: backgroundScroll 60s linear infinite;
+}
+
+/* 添加移动端背景图片适配 */
+@media (max-width: 768px) {
+    .background-image {
+        background-size: cover;
+        background-position: center center; /* 确保在移动端居中显示 */
+        /* 移除可能造成遮挡的样式 */
+        left: 0;
+        width: 100%;
+    }
+}
+
+/* 特别针对小屏手机优化 */
+@media (max-width: 480px) {
+    .background-image {
+        background-size: cover;
+        background-position: center center;
+        /* 确保图片完全覆盖容器 */
+        min-width: 100%;
+        min-height: 100%;
+    }
+    
+    /* 调整背景滚动动画，使其在移动端更平滑 */
+    @keyframes backgroundScroll {
+        0% {
+            transform: translateY(0);
         }
+        100% {
+            transform: translateY(-1000px); /* 移动端滚动距离减半，避免过度滚动 */
+        }
+    }
+}
+
+/* 确保背景容器在移动端正确显示 */
+@media (max-width: 768px) {
+    .background-container {
+        overflow: hidden;
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+    }
         
         /* 背景渐变遮罩，使文字更清晰 - 进一步降低透明度 */
         .background-overlay {
@@ -110,6 +151,7 @@
             position: relative;
             z-index: 1;
         }
+    }
         
         /* 标题部分 - 使用纯色背景，降低透明度 */
         .header {
