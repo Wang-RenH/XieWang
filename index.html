@@ -351,6 +351,11 @@
     <div class="border-decoration border-top-left"></div>
     <div class="border-decoration border-bottom-right"></div>
     
+    <!-- 音乐播放器 -->
+    <div class="music-player" id="musicPlayer">
+        <i class="music-icon fas fa-volume-up" id="musicIcon"></i>
+    </div>
+    
     <!-- 标题 -->
     <div class="invitation-title">
         <h1>婚礼请柬</h1>
@@ -391,13 +396,14 @@
             const petalsContainer = document.getElementById('petalsContainer');
             const bgMusic = document.getElementById('bgMusic');
             const musicPlayer = document.getElementById('musicPlayer');
+            const musicIcon = document.getElementById('musicIcon');
             
             console.log("页面加载完成，按钮文字: 开启请柬");
             
             // 自动播放背景音乐函数
             function playBackgroundMusic() {
                 // 设置音乐音量
-                bgMusic.volume = 0.4;
+                bgMusic.volume = 0.3;
                 
                 // 尝试自动播放音乐
                 const playPromise = bgMusic.play();
@@ -405,21 +411,42 @@
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
                         console.log('音乐自动播放成功');
+                        musicIcon.classList.remove('fa-volume-mute');
+                        musicIcon.classList.add('fa-volume-up');
+                        bgMusic.playing = true;
                     }).catch(error => {
-                        console.log('自动播放被阻止，需要用户交互');
-                        // 点击页面时播放音乐
-                        document.addEventListener('click', function playOnClick() {
-                            bgMusic.play().then(() => {
-                                console.log('音乐通过点击开始播放');
-                                // 移除事件监听器，避免重复绑定
-                                document.removeEventListener('click', playOnClick);
-                            });
-                        });
+                        console.log('自动播放被阻止，需要用户交互:', error);
+                        // 显示静音图标
+                        musicIcon.classList.remove('fa-volume-up');
+                        musicIcon.classList.add('fa-volume-mute');
+                        bgMusic.playing = false;
+                        
+                        // 添加用户交互监听
+                        document.addEventListener('click', playOnFirstInteraction);
+                        openBtn.addEventListener('click', playOnFirstInteraction);
+                        musicPlayer.addEventListener('click', playOnFirstInteraction);
                     });
                 }
             }
             
-            // 页面加载后尝试自动播放音乐
+            // 首次交互播放音乐
+            function playOnFirstInteraction() {
+                bgMusic.play().then(() => {
+                    console.log('音乐通过用户交互开始播放');
+                    musicIcon.classList.remove('fa-volume-mute');
+                    musicIcon.classList.add('fa-volume-up');
+                    bgMusic.playing = true;
+                    
+                    // 移除事件监听器，避免重复绑定
+                    document.removeEventListener('click', playOnFirstInteraction);
+                    openBtn.removeEventListener('click', playOnFirstInteraction);
+                    musicPlayer.removeEventListener('click', playOnFirstInteraction);
+                }).catch(error => {
+                    console.log('播放失败:', error);
+                });
+            }
+            
+            // 页面加载后立即尝试自动播放音乐
             setTimeout(playBackgroundMusic, 1000);
             
             // 修复花瓣飘落效果 - 避免堆积
@@ -469,6 +496,37 @@
                 }
             }
             
+            // 音乐播放器控制
+            musicPlayer.addEventListener('click', function() {
+                if (bgMusic.paused) {
+                    bgMusic.play().then(() => {
+                        musicIcon.classList.remove('fa-volume-mute');
+                        musicIcon.classList.add('fa-volume-up');
+                        bgMusic.playing = true;
+                        console.log('音乐已播放');
+                    }).catch(error => {
+                        console.log('播放失败:', error);
+                    });
+                } else {
+                    bgMusic.pause();
+                    musicIcon.classList.remove('fa-volume-up');
+                    musicIcon.classList.add('fa-volume-mute');
+                    bgMusic.playing = false;
+                    console.log('音乐已暂停');
+                }
+            });
+            
+            // 音量控制
+            bgMusic.addEventListener('volumechange', function() {
+                if (bgMusic.volume > 0) {
+                    musicIcon.classList.remove('fa-volume-mute');
+                    musicIcon.classList.add('fa-volume-up');
+                } else {
+                    musicIcon.classList.remove('fa-volume-up');
+                    musicIcon.classList.add('fa-volume-mute');
+                }
+            });
+            
             // 初始化花瓣效果
             createPetals();
             
@@ -500,6 +558,11 @@
                 // 回车键触发开启请柬
                 if (event.code === 'Enter') {
                     openBtn.click();
+                }
+                // 空格键控制音乐播放/暂停
+                if (event.code === 'Space') {
+                    event.preventDefault(); // 防止页面滚动
+                    musicPlayer.click();
                 }
             });
             
