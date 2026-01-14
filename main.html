@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>谢开城 & 王莹 | 婚礼请柬</title>
+    <!-- 引入字魂镇魂手书风格字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap">
+    <!-- 引入Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #5d3a7a;
+            --accent-color: #ff9a8b;
+            --light-color: #fff9fb;
+            --dark-color: #3a2c4a;
+        }
+        
+        /* 可滚动背景图片容器 - 1500×4000分辨率 */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4000px; /* 背景图片高度 */
+            /* 背景图片 - 可替换 START */
+            background-image: url('https://s41.ax1x.com/2026/01/14/pZDjIPO.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            /* 背景图片 - 可替换 END */
+            animation: backgroundScroll 60s linear infinite;
+        }
+        
+        /* 背景渐变遮罩，使文字更清晰 - 进一步降低透明度 */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(255, 255, 255, 0.2) 20%,
+                rgba(255, 255, 255, 0.15) 40%,
+                rgba(255, 255, 255, 0.1) 60%,
+                rgba(255, 255, 255, 0.05) 80%,
+                rgba(255, 255, 255, 0.02) 100%);
+            z-index: -1;
+        }
+        
+        body {
+            font-family: 'Ma Shan Zheng', cursive, sans-serif;
+            color: var(--dark-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        
+        /* 花瓣容器 */
+        .petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .petal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 182, 193, 0.6);
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+        
+        /* 主界面样式 */
+        .main-container {
+            display: block;
+            opacity: 1;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            animation: fadeIn 1s ease forwards;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 标题部分 - 使用纯色背景，降低透明度 */
+        .header {
+            text-align: center;
+            padding: 50px 20px 40px;
+            background: rgba(255, 255, 255, 0.5); /* 进一步降低透明度 */
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            backdrop-filter: blur(2px);
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .couple-names {
+            font-size: 2.2rem;
+            margin: 20px 0;
+            color: var(--secondary-color);
+        }
+        
+        .date {
+            font-size: 1.6rem;
+            margin-top: 10px;
+            color: #7d5fa3;
+        }
+        
+        /* 轮播图区域 - 使用纯色背景，降低透明度 */
+        .gallery-section {
+            padding: 40px 20px 60px;
+            max-width: 100%;
+            margin: 0 auto 30px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5); /* 进一步降低透明度 */
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        
+        /* 轮播图样式 - 通过背景图片实现 */
+        .slideshow-container {
+            width: 100%;
+            max-width: 400px;
+            height: 710px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .slideshow {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 25px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        /* 轮播图图片 - 可替换 START */
+        .slide-1 {
+            /* 幻灯片1背景图片 - 可替换 */
+            background-image: url('https://s41.ax1x.com/2026/01/14/pZDvX6J.jpg');
+        }
+        
+        .slide-2 {
+            /* 幻灯片2背景图片 - 可替换 */
+            background-image: url('https://s41.ax1x.com/2026/01/14/pZDxk1e.jpg');
+        }
+        
+        .slide-3 {
+            /* 幻灯片3背景图片 - 可替换 */
+            background-image: url('https://s41.ax1x.com/2026/01/14/pZDxEXd.jpg');
+        }
+        
+        .slide-4 {
+            /* 幻灯片4背景图片 - 可替换 */
+            background-image: url('https://s41.ax1x.com/2026/01/14/pZDxZnA.jpg');
+        }
+        /* 轮播图图片 - 可替换 END */
+        
+        .slide-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 3;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        /* 婚礼详情 - 使用纯色背景，降低透明度 */
+        .details-section {
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.5); /* 进一步降低透明度 */
+            border-radius: 25px;
+            max-width: 900px;
+            margin: 0 auto 50px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+            width: calc(100% - 40px);
+            backdrop-filter: blur(2px);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .detail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .detail-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f0e6ff 0%, #e1d1f9 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 25px;
+            font-size: 2rem;
+            color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.2);
+            background-size: 60%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        /* 日期图标 - 可替换 START */
+        .icon-date {
+            /* 日期图标 - 可替换 */
+            background-image: url('https://s41.ax1x.com/2026/01/14/pZDxrjJ.png');
+        }
+        /* 日期图标 - 可替换 END */
+        
+        /* 地点图标 - 可替换 START (地标造型图标) */
+        .icon-location {
+            /* 地点图标 - 可替换 */
+            background-image: url('https://pic1.imgdb.cn/item/696796f599f37a647f59a4e8.png');
+        }
+        /* 地点图标 - 可替换 END */
+        
+        /* 新人图标 - 可替换 START (两束花造型图标) */
+        .icon-couple {
+            /* 新人图标 - 可替换 */
+            background-image: url('https://pic1.imgdb.cn/item/696797c199f37a647f59a97f.png');
+        }
+        /* 新人图标 - 可替换 END */
+        
+        /* 电话图标 - 可替换 START */
+        .icon-phone {
+            /* 电话图标 - 可替换 */
+            background-image: url('https://pic1.imgdb.cn/item/6967984199f37a647f59acdb.png');
+        }
+        /* 电话图标 - 可替换 END */
+        
+        .detail-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+        }
+        
+        .detail-text p {
+            font-size: 1.2rem;
+            color: #7d5fa3;
+            line-height: 1.5;
+        }
+        
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #4a2f6b 100%);
+            color: white;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 2;
+            border-radius: 25px 25px 0 0;
+            margin-top: 30px;
+        }
+        
+        .heart {
+            color: #ff6b8b;
+            display: inline-block;
+            animation: heartbeat 1.5s infinite;
+            margin: 0 5px;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            5% { transform: scale(1.2); }
+            10% { transform: scale(1.1); }
+            15% { transform: scale(1.3); }
+            50% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 音乐播放器 */
+        .music-player {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        
+        .music-player:hover {
+            transform: scale(1.1);
+        }
+        
+        .music-icon {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        /* 背景滚动动画 */
+        @keyframes backgroundScroll {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-2000px); /* 滚动一半高度，展示完整背景 */
+            }
+        }
+        
+        /* 暂停背景滚动 */
+        .background-paused .background-image {
+            animation-play-state: paused;
+        }
+        
+        /* 返回按钮 */
+        .back-btn {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .back-icon {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        /* 花瓣动画 - 参考index.html中的花瓣动画 */
+        @keyframes fall {
+            0% { top: -20px; opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
+        }
+        
+        @keyframes sway {
+            0% { transform: translateX(0) rotate(45deg); }
+            100% { transform: translateX(20px) rotate(90deg); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .couple-names {
+                font-size: 1.8rem;
+            }
+            
+            .date {
+                font-size: 1.3rem;
+            }
+            
+            .slideshow-container {
+                max-width: 320px;
+                height: 570px;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .detail-item {
+                padding: 20px;
+            }
+            
+            .detail-icon {
+                width: 60px;
+                height: 60px;
+                margin-right: 20px;
+            }
+            
+            .music-player, .back-btn {
+                width: 55px;
+                height: 55px;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .back-btn {
+                left: 20px;
+            }
+            
+            .background-image {
+                animation: backgroundScroll 120s linear infinite; /* 移动端滚动更慢 */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .couple-names {
+                font-size: 1.5rem;
+            }
+            
+            .date {
+                font-size: 1.1rem;
+            }
+            
+            .slideshow-container {
+                max-width: 280px;
+                height: 500px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .detail-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 1.7rem;
+                margin-right: 15px;
+            }
+            
+            .detail-text h3 {
+                font-size: 1.3rem;
+            }
+            
+            .detail-text p {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 可滚动背景图片容器 -->
+    <div class="background-container">
+        <div class="background-image"></div>
+    </div>
+    
+    <!-- 背景渐变遮罩 - 进一步降低透明度 -->
+    <div class="background-overlay"></div>
+    
+    <!-- 花瓣飘落效果容器 -->
+    <div class="petals-container" id="petalsContainer"></div>
+    
+    <!-- 返回按钮 -->
+    <a href="index.html" class="back-btn" id="backBtn">
+        <div class="back-icon">←</div>
+    </a>
+    
+    <!-- 音乐播放器 -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-icon"><i class="fas fa-volume-up"></i></div>
+    </div>
+    
+    <!-- 主界面 -->
+    <div class="main-container" id="mainContainer">
+        <!-- 标题部分 -->
+        <header class="header">
+            <h1 class="title">诚邀您的见证</h1>
+            <h2 class="subtitle">谢开城 & 王莹 的婚礼</h2>
+            <div class="couple-names">
+                新郎：谢开城 <span class="heart">❤</span> 新娘：王莹
+            </div>
+            <div class="date">
+                2026年2月22日 星期日 (农历正月初六)
+            </div>
+        </header>
+        
+        <!-- 轮播图部分 -->
+        <section class="gallery-section">
+            <h2 class="section-title">幸福瞬间</h2>
+            <div class="slideshow-container">
+                <div class="slideshow">
+                    <!-- 幻灯片1 - 可替换背景图片 START -->
+                    <div class="slide slide-1 active"></div>
+                    <!-- 幻灯片1 - 可替换背景图片 END -->
+                    
+                    <!-- 幻灯片2 - 可替换背景图片 START -->
+                    <div class="slide slide-2"></div>
+                    <!-- 幻灯片2 - 可替换背景图片 END -->
+                    
+                    <!-- 幻灯片3 - 可替换背景图片 START -->
+                    <div class="slide slide-3"></div>
+                    <!-- 幻灯片3 - 可替换背景图片 END -->
+                    
+                    <!-- 幻灯片4 - 可替换背景图片 START -->
+                    <div class="slide slide-4"></div>
+                    <!-- 幻灯片4 - 可替换背景图片 END -->
+                    
+                    <div class="slide-dots" id="slideDots">
+                        <div class="dot active" data-index="0"></div>
+                        <div class="dot" data-index="1"></div>
+                        <div class="dot" data-index="2"></div>
+                        <div class="dot" data-index="3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 婚礼详情 -->
+        <section class="details-section">
+            <h2 class="section-title">婚礼详情</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-icon icon-date"></div>
+                    <div class="detail-text">
+                        <h3>婚礼日期</h3>
+                        <p>2026年2月22日 (农历正月初六)<br>星期日</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon icon-location"></div>
+                    <div class="detail-text">
+                        <h3>婚礼地点</h3>
+                        <p>安徽省宿州市砀山县<br>具体地点请咨询新郎新娘</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon icon-couple"></div>
+                    <div class="detail-text">
+                        <h3>新郎新娘</h3>
+                        <p>谢开城 & 王莹</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon icon-phone"></div>
+                    <div class="detail-text">
+                        <h3>联系方式</h3>
+                        <p>新郎：15250146381<br>新娘：18765376049</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>感谢您与我们共同见证这一幸福时刻</p>
+            <p>期待您的光临 <span class="heart">❤</span></p>
+        </footer>
+    </div>
+
+    <!-- 背景音乐 - 使用本地marry.mp3文件 -->
+    <audio id="bgMusic" loop>
+        <!-- 音乐文件 - 可替换 START -->
+        <!-- 将src替换为您本地的音乐文件路径，文件名为marry.mp3 -->
+        <source src="marry.mp3" type="audio/mpeg">
+        <!-- 音乐文件 - 可替换 END -->
+        您的浏览器不支持音频播放
+    </audio>
+    
+    <script>
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const musicPlayer = document.getElementById('musicPlayer');
+            const bgMusic = document.getElementById('bgMusic');
+            const backgroundContainer = document.querySelector('.background-container');
+            const petalsContainer = document.getElementById('petalsContainer');
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            
+            console.log("主界面加载完成");
+            
+            // 修复花瓣飘落效果 - 使用index.html中的花瓣动画逻辑
+            function createPetals() {
+                const petalCount = 30; // 增加花瓣数量
+                const petalColors = [
+                    'rgba(255, 182, 193, 0.7)', // 浅粉色
+                    'rgba(255, 200, 221, 0.7)', // 淡粉色
+                    'rgba(255, 223, 211, 0.7)', // 肉粉色
+                    'rgba(255, 240, 245, 0.7)', // 淡粉白
+                ];
+                
+                for (let i = 0; i < petalCount; i++) {
+                    const petal = document.createElement('div');
+                    petal.classList.add('petal');
+                    
+                    // 随机位置
+                    const startX = Math.random() * 100;
+                    
+                    // 随机大小
+                    const size = Math.random() * 20 + 8;
+                    petal.style.width = `${size}px`;
+                    petal.style.height = `${size}px`;
+                    
+                    // 随机颜色
+                    const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+                    petal.style.background = color;
+                    
+                    // 随机动画参数
+                    const duration = Math.random() * 15 + 10;
+                    const delay = Math.random() * 5;
+                    
+                    // 设置CSS动画 - 使用index.html中的动画名称
+                    petal.style.left = `${startX}%`;
+                    petal.style.animation = `fall ${duration}s linear ${delay}s infinite, sway ${duration/3}s ease-in-out ${delay}s infinite alternate`;
+                    
+                    // 添加到容器
+                    petalsContainer.appendChild(petal);
+                }
+            }
+            
+            // 初始化花瓣效果
+            createPetals();
+            
+            // 持续生成花瓣
+            setInterval(() => {
+                createPetals();
+            }, 15000); // 每15秒生成一批新花瓣
+            
+            // 轮播图功能
+            let currentSlide = 0;
+            let slideInterval;
+            
+            function showSlide(index) {
+                // 隐藏所有幻灯片
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // 移除所有点的active类
+                dots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+                
+                // 显示当前幻灯片
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            function nextSlide() {
+                let nextIndex = (currentSlide + 1) % slides.length;
+                showSlide(nextIndex);
+            }
+            
+            // 自动轮播
+            function startSlideShow() {
+                slideInterval = setInterval(nextSlide, 4000);
+            }
+            
+            // 点击点切换幻灯片
+            dots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    showSlide(index);
+                    // 重置自动轮播计时器
+                    clearInterval(slideInterval);
+                    startSlideShow();
+                });
+            });
+            
+            // 初始化轮播图
+            showSlide(0);
+            startSlideShow();
+            
+            // 自动播放背景音乐函数
+            function playBackgroundMusic() {
+                // 设置音乐音量
+                bgMusic.volume = 0.5;
+                
+                // 尝试自动播放音乐
+                const playPromise = bgMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('音乐自动播放成功');
+                        // 更新音乐播放器图标
+                        musicPlayer.innerHTML = '<div class="music-icon"><i class="fas fa-volume-up"></i></div>';
+                        // 背景滚动动画继续
+                        backgroundContainer.classList.remove('background-paused');
+                    }).catch(error => {
+                        console.log('自动播放被阻止，需要用户交互');
+                        // 显示提示
+                        musicPlayer.innerHTML = '<div class="music-icon"><i class="fas fa-volume-mute"></i></div>';
+                        musicPlayer.style.background = 'rgba(255, 0, 0, 0.1)';
+                        
+                        // 点击音乐播放器图标时播放音乐
+                        musicPlayer.addEventListener('click', function playOnClick() {
+                            bgMusic.play().then(() => {
+                                console.log('音乐通过点击开始播放');
+                                musicPlayer.innerHTML = '<div class="music-icon"><i class="fas fa-volume-up"></i></div>';
+                                musicPlayer.style.background = 'rgba(255, 255, 255, 0.9)';
+                                backgroundContainer.classList.remove('background-paused');
+                                // 移除事件监听器，避免重复绑定
+                                musicPlayer.removeEventListener('click', playOnClick);
+                            });
+                        });
+                    });
+                }
+            }
+            
+            // 页面加载后尝试自动播放音乐
+            setTimeout(playBackgroundMusic, 500);
+            
+            // 音乐播放器控制
+            let isPlaying = true;
+            musicPlayer.addEventListener('click', function() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicPlayer.innerHTML = '<div class="music-icon"><i class="fas fa-volume-mute"></i></div>';
+                    // 暂停背景滚动动画
+                    backgroundContainer.classList.add('background-paused');
+                } else {
+                    bgMusic.play();
+                    musicPlayer.innerHTML = '<div class="music-icon"><i class="fas fa-volume-up"></i></div>';
+                    // 恢复背景滚动动画
+                    backgroundContainer.classList.remove('background-paused');
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(event) {
+                // 空格键控制音乐播放/暂停
+                if (event.code === 'Space') {
+                    event.preventDefault();
+                    musicPlayer.click();
+                }
+                
+                // ESC键返回信封界面
+                if (event.code === 'Escape') {
+                    document.getElementById('backBtn').click();
+                }
+                
+                // 左右箭头控制轮播图
+                if (event.code === 'ArrowLeft') {
+                    let prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+                    showSlide(prevIndex);
+                    clearInterval(slideInterval);
+                    startSlideShow();
+                }
+                
+                if (event.code === 'ArrowRight') {
+                    nextSlide();
+                    clearInterval(slideInterval);
+                    startSlideShow();
+                }
+            });
+            
+            // 添加页面进入动画
+            document.querySelector('.header').style.animation = 'fadeInDown 1s ease';
+            document.querySelector('.gallery-section').style.animation = 'fadeInUp 1s ease 0.3s both';
+            document.querySelector('.details-section').style.animation = 'fadeInUp 1s ease 0.6s both';
+            
+            console.log("=== 修改说明 ===");
+            console.log("1. 修复了花瓣飘落效果，现在花瓣会从顶部向下无序飘落");
+            console.log("2. 使用了index.html中的花瓣动画逻辑，确保花瓣能够正确下落");
+            console.log("3. 移除了轮播图上的文字内容");
+            console.log("4. 将所有UI元素背景改为纯色，并进一步降低透明度");
+            console.log("5. 修改了婚礼详情图标，现在可以通过URL自定义替换");
+            console.log("6. 婚礼地点图标改为地标造型，新郎新娘图标改为两束花造型");
+        });
+    </script>
+</body>
+</html>
